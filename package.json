@@ -1,6 +1,6 @@
 {
-	"name": "canvas-loop-engine",
-	"description": "A basic loop engine for canvas animation",
+	"name": "package-template",
+	"description": "A npm package template",
 	"main": "lib/index.js",
 	"scripts": {
 		"test": "yarn jest --config=./tests/jest.config.js --verbose",
@@ -28,7 +28,7 @@
 		"url": "https://github.com/Julien-Amblard/canvas-loop-engine/issues"
 	},
 	"homepage": "https://github.com/Julien-Amblard/canvas-loop-engine#readme",
-	"keywords": [ "package", "template" ],
+	"keywords": [ "npm", "package", "template" ],
 	"devDependencies": {
 		"@babel/cli": "^7.7.4",
 		"@babel/core": "^7.7.4",
