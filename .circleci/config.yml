@@ -22,7 +22,7 @@ jobs:
 
       - run:
           name: Run tests
-          command: yarn circleci-test
+          command: yarn circleci:test
 
       - run:
           name: Run build:lib
