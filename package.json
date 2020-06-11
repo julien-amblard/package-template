@@ -3,16 +3,14 @@
 	"description": "A npm package template",
 	"main": "lib/index.js",
 	"scripts": {
+		"dev": "webpack-dev-server --mode development --config webpack.dev.ts",
+		"demo": "yarn build:lib && webpack-dev-server --mode production --config webpack.prod.ts",
 		"test:ci": "yarn jest --config=./tests/jest.config.js",
 		"test:watch": "yarn jest --config=./tests/jest.config.js --verbose --watchAll",
 		"test:coverage": "yarn jest --config=./tests/jest.config.js --verbose --coverage",
 		"test:coverage:report": "codecov --token=$CODECOV_TOKEN",
-
-		"dev": "webpack-dev-server --mode development --config webpack.dev.js",
-		"demo": "yarn build:lib && webpack-dev-server --mode production --config webpack.prod.js",
-
 		"build:all": "rimraf ./lib && yarn build:lib && yarn build:types",
-		"build:lib": "webpack --config webpack.config.js",
+		"build:lib": "webpack --config webpack.config.ts",
 		"build:types": "tsc",
 		"prepublishOnly": "yarn test:ci && yarn build:all"
 	},
@@ -33,7 +31,11 @@
 		"url": "https://github.com/Julien-Amblard/canvas-loop-engine/issues"
 	},
 	"homepage": "https://github.com/Julien-Amblard/canvas-loop-engine#readme",
-	"keywords": [ "npm", "package", "template" ],
+	"keywords": [
+		"npm",
+		"package",
+		"template"
+	],
 	"devDependencies": {
 		"@babel/cli": "^7.7.4",
 		"@babel/core": "^7.7.4",
@@ -42,6 +44,7 @@
 		"@babel/plugin-proposal-optional-chaining": "^7.8.3",
 		"@babel/polyfill": "^7.7.0",
 		"@babel/preset-env": "^7.7.4",
+		"@babel/preset-react": "^7.10.1",
 		"@babel/preset-typescript": "^7.8.3",
 		"babel-jest": "^24.9.0",
 		"babel-loader": "^8.0.6",
@@ -55,5 +58,8 @@
 		"webpack": "^4.41.2",
 		"webpack-cli": "^3.3.10",
 		"webpack-dev-server": "^3.9.0"
+	},
+	"dependencies": {
+		"@types/jest": "^26.0.0"
 	}
 }
