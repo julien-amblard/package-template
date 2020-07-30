@@ -80,7 +80,7 @@ jobs:
   publish-canary:
     <<: *defaults
     steps:
-      - *prepare_publish
+      <<: *prepare_publish
       - run:
           name: Publish package
           command: npm publish --tag canary
@@ -92,7 +92,7 @@ jobs:
   publish:
     <<: *defaults
     steps:
-      - *prepare_publish
+      <<: *prepare_publish
       - run:
           name: Publish package
           command: npm publish
