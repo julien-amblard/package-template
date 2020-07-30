@@ -2,7 +2,7 @@ version: 2.1
 
 aliases:
   - &defaults
-    working_directory: ~/repo
+    working_directory: ~/repos
     docker:
       - image: circleci/node:12.5.0
   
@@ -48,7 +48,7 @@ aliases:
           command: echo $CURRENT_PACKAGE_NAME@$CURRENT_PACKAGE_VERSION
   - &persist
       persist_to_workspace:
-          root: ~/repo
+          root: ~/repos
           paths:
             - .
 
@@ -57,48 +57,37 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies-
-
       - run:
           name: Install dependencies
           command: yarn install --no-lockfile
-
       - run:
           name: Run tests
           command: yarn test:ci
-
       - run:
           name: Build coverage
           command: npm run test:coverage
-
       - store_artifacts:
           path: tests/coverage/lcov-report
-
       - run:
           name: Report coverage
           command: npm run test:coverage:report
-
       - run:
           name: Run build:webpack
           command: yarn build:webpack
-
       - run:
           name: Run build:transpile
           command: yarn build:transpile
-
       - run:
           name: Run build:types
           command: yarn build:types
-
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-
       - *persist
 
   publish-canary:
@@ -125,11 +114,7 @@ jobs:
       - run:
           name: Publish package
           command: npm publish
-
-      - persist_to_workspace:
-          root: ~/repo
-          paths:
-            - .
+      - *persist
 
 
 workflows:
