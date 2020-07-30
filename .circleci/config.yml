@@ -100,7 +100,7 @@ jobs:
       - *print_informations
       - run:
           name: Publish package
-          command: npm publish --tag canary
+          command: npm publish --access public --tag canary
       - *persist
 
   publish:
@@ -113,7 +113,7 @@ jobs:
       - *print_informations
       - run:
           name: Publish package
-          command: npm publish
+          command: npm publish --access public
       - *persist
 
 
