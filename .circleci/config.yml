@@ -27,7 +27,7 @@ aliases:
 
   - &attach
       attach_workspace:
-          at: ~/project
+          at: ~/repos
   - &auth_registry
       run:
           name: Authenticate with registry
