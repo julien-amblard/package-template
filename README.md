@@ -1,13 +1,13 @@
-<h2 align="center">package-template</h2>  
+<h2 align="center">@oory/package-template</h2>  
 
 <div align="center">  
 
-[![npm](https://img.shields.io/npm/v/@ory/package-template.svg?style=flat-square)](https://www.npmjs.com/package/@ory/package-template)
+[![npm](https://img.shields.io/npm/v/@oory/package-template.svg?style=flat-square)](https://www.npmjs.com/package/@oory/package-template)
 [![CircleCI Status](https://img.shields.io/circleci/build/github/sl-julienamblard/package-template/master?style=flat-square)](https://circleci.com/gh/sl-julienamblard/package-template)
 [![codecov](https://img.shields.io/codecov/c/github/sl-julienamblard/package-template?logo=codecov&style=flat-square)](https://codecov.io/gh/sl-julienamblard/package-template)
-[![npm](https://img.shields.io/bundlephobia/minzip/@ory/package-template?style=flat-square)](https://www.npmjs.com/package/@ory/package-template)
-[![npm](https://img.shields.io/npm/dt/@ory/package-template.svg?style=flat-square)](https://www.npmjs.com/package/@ory/package-template)
-[![npm](https://img.shields.io/npm/l/@ory/package-template.svg?style=flat-square)](https://github.com/sl-julienamblard/package-template/blob/master/LICENSE)
+[![npm](https://img.shields.io/bundlephobia/minzip/@oory/package-template?style=flat-square)](https://www.npmjs.com/package/@oory/package-template)
+[![npm](https://img.shields.io/npm/dt/@oory/package-template.svg?style=flat-square)](https://www.npmjs.com/package/@oory/package-template)
+[![npm](https://img.shields.io/npm/l/@oory/package-template.svg?style=flat-square)](https://github.com/sl-julienamblard/package-template/blob/master/LICENSE)
 
 </div>  
 
@@ -34,13 +34,13 @@ package description..
 *Install with npm:*
 
 ```bash
-    npm i package-template --save
+    npm i @oory/package-template --save
 ```
 
 *Install with yarn:*
 
 ```bash
-    yarn add package-template
+    yarn add @oory/package-template
 ```
 
 <a id="usages"></a>
@@ -69,7 +69,7 @@ import packageTempalte from "package-template"
 <br />
 
 ```js
-import packageTemplate from "package-template"
+import packageTemplate from "@oory/package-template"
 //do some js
 ```
 
@@ -90,7 +90,7 @@ description...
 
 **`TypeName`**
 ```ts
-    import { TypeName } from "package-template/typings"
+    import { TypeName } from "@oory/package-template/typings"
 
     //type
 ```
