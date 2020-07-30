@@ -82,11 +82,11 @@ jobs:
   publish-canary:
     <<: *defaults
     steps:
-      <<: *attach
-      <<: *auth_registry
-      <<: *save_package_informations
-      <<: *versioning_package
-      <<: *print_informations
+      - *attach
+      - *auth_registry
+      - *save_package_informations
+      - *versioning_package
+      - *print_informations
       - run:
           name: Publish package
           command: npm publish --tag canary
@@ -98,11 +98,11 @@ jobs:
   publish:
     <<: *defaults
     steps:
-      <<: *attach
-      <<: *auth_registry
-      <<: *save_package_informations
-      <<: *versioning_package
-      <<: *print_informations
+      - *attach
+      - *auth_registry
+      - *save_package_informations
+      - *versioning_package
+      - *print_informations
       - run:
           name: Publish package
           command: npm publish
