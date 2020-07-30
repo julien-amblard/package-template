@@ -57,8 +57,12 @@ jobs:
           command: npm run test:coverage:report
 
       - run:
-          name: Run build:lib
-          command: yarn build:lib
+          name: Run build:webpack
+          command: yarn build:webpack
+
+      - run:
+          name: Run build:transpile
+          command: yarn build:transpile
 
       - run:
           name: Run build:types
