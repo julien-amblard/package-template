@@ -1,1 +1,3 @@
-export const foo = ():void => console.log( "hello wolrd" )
+/** @format */
+
+export const foo = (): void => console.log("hello wolrd")

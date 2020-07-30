@@ -1,41 +1,47 @@
-const path = require('path');
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+/** @format */
+
+const path = require("path")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
 const htmlWebpackPlugin = new HtmlWebpackPlugin({
 	template: path.join(__dirname, "demo/index.html"),
-	filename: "./index.html"
-});
+	filename: "./index.html",
+})
 module.exports = {
 	entry: path.join(__dirname, "demo/src/index.ts"),
-	output : {
-		path: path.resolve(__dirname,'demo/dist')
+	output: {
+		path: path.resolve(__dirname, "demo/dist"),
 	},
 	target: "node",
 	module: {
 		rules: [
 			{
 				test: /\.scss$/i,
-				use: ['style-loader', 'css-loader', 'sass-loader'],
+				use: ["style-loader", "css-loader", "sass-loader"],
 			},
 			{
 				test: /\.(js|ts)$/,
 				use: {
-					loader: 'babel-loader',
+					loader: "babel-loader",
 					options: {
-						presets: ['@babel/preset-env', '@babel/preset-typescript'],
-						plugins: ['@babel/plugin-proposal-object-rest-spread', "@babel/plugin-proposal-class-properties", "@babel/plugin-proposal-optional-chaining"]
+						presets: ["@babel/preset-env", "@babel/preset-typescript"],
+						plugins: [
+							"@babel/plugin-proposal-object-rest-spread",
+							"@babel/plugin-proposal-class-properties",
+							"@babel/plugin-proposal-optional-chaining",
+						],
 					},
 				},
-				exclude: /node_modules/
-			}
-		]
+				exclude: /node_modules/,
+			},
+		],
 	},
 	plugins: [htmlWebpackPlugin],
 	resolve: {
-		modules: [path.resolve(__dirname, './src'), 'node_modules'],
-		extensions: [".js", ".jsx", ".ts", ".tsx"]
+		modules: [path.resolve(__dirname, "./src"), "node_modules"],
+		extensions: [".js", ".jsx", ".ts", ".tsx"],
 	},
 	devServer: {
 		port: 8645,
-		open: true
-	}
+		open: true,
+	},
 }
