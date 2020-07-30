@@ -5,21 +5,24 @@ aliases:
     working_directory: ~/repo
     docker:
       - image: circleci/node:12.5.0
-
-  - &prepare_publish
+  - &attach
       attach_workspace:
           at: ~/project
+  - &auth_registry
       run:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+  - &save_package_informations
       run:
           name: Save package informations
           command: |
             echo 'export CURRENT_PACKAGE_VERSION=$(git describe --tags)' >> $BASH_ENV
             echo 'export CURRENT_PACKAGE_NAME=$(jq ".name" ~/repo/package.json -r)' >> $BASH_ENV
+  - &versioning_package
       run:
           name: Versioning package
           command: npm version $CURRENT_PACKAGE_VERSION --no-git-tag-version
+  - &print_informations
       run:
           name: Print package informations
           command: echo $CURRENT_PACKAGE_NAME@$CURRENT_PACKAGE_VERSION
@@ -79,7 +82,11 @@ jobs:
   publish-canary:
     <<: *defaults
     steps:
-      - *prepare_publish
+      <<: *attach
+      <<: *auth_registry
+      <<: *save_package_informations
+      <<: *versioning_package
+      <<: *print_informations
       - run:
           name: Publish package
           command: npm publish --tag canary
@@ -91,7 +98,11 @@ jobs:
   publish:
     <<: *defaults
     steps:
-      - *prepare_publish
+      <<: *attach
+      <<: *auth_registry
+      <<: *save_package_informations
+      <<: *versioning_package
+      <<: *print_informations
       - run:
           name: Publish package
           command: npm publish
