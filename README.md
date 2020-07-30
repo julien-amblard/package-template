@@ -11,7 +11,8 @@
 
 </div>  
 
-
+This is a package template.
+You should not have to install this :D
 package description..
 
 ## [live codepen demo](https://codepen.io/Capse/full/LYGVRoP)
