@@ -116,7 +116,7 @@ workflows:
               only: /^v[\d\.]+-(canary|alpha|beta)\.\d$/
             branches:
               ignore: /.*/
-      - publish_canary:
+      - publish-canary:
           requires:
             - tests
           filters:
