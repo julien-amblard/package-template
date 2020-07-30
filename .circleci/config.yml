@@ -31,13 +31,13 @@ aliases:
   - &auth_registry
       run:
           name: Authenticate with registry
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repos/.npmrc
   - &save_package_informations
       run:
           name: Save package informations
           command: |
             echo 'export CURRENT_PACKAGE_VERSION=$(git describe --tags)' >> $BASH_ENV
-            echo 'export CURRENT_PACKAGE_NAME=$(jq ".name" ~/repo/package.json -r)' >> $BASH_ENV
+            echo 'export CURRENT_PACKAGE_NAME=$(jq ".name" ~/repos/package.json -r)' >> $BASH_ENV
   - &versioning_package
       run:
           name: Versioning package
