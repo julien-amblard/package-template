@@ -1,5 +1,5 @@
 {
-	"name": "@ory/package-template",
+	"name": "@oory/package-template",
 	"description": "A npm package template",
 	"main": "lib/index.js",
 	"scripts": {
