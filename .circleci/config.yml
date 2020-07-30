@@ -129,6 +129,7 @@ workflows:
       - tests:
           <<: *canary_tag_filter
       - publish-canary:
+          context: personal_packages_vars
           requires:
             - tests
           <<: *canary_tag_filter
@@ -138,6 +139,7 @@ workflows:
       - tests:
           <<: *prod_tag_filter
       - publish:
+          context: personal_packages_vars
           requires:
             - tests
           <<: *prod_tag_filter
