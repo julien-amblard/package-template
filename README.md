@@ -2,12 +2,12 @@
 
 <div align="center">  
 
-[![npm](https://img.shields.io/npm/v/package-template.svg?style=flat-square)](https://www.npmjs.com/package/package-template)
+[![npm](https://img.shields.io/npm/v/@ory/package-template.svg?style=flat-square)](https://www.npmjs.com/package/@ory/package-template)
 [![CircleCI Status](https://img.shields.io/circleci/build/github/sl-julienamblard/package-template/master?style=flat-square)](https://circleci.com/gh/sl-julienamblard/package-template)
 [![codecov](https://img.shields.io/codecov/c/github/sl-julienamblard/package-template?logo=codecov&style=flat-square)](https://codecov.io/gh/sl-julienamblard/package-template)
-[![npm](https://img.shields.io/bundlephobia/minzip/package-template?style=flat-square)](https://www.npmjs.com/package/package-template)
-[![npm](https://img.shields.io/npm/dt/package-template.svg?style=flat-square)](https://www.npmjs.com/package/package-template)
-[![npm](https://img.shields.io/npm/l/package-template.svg?style=flat-square)](https://github.com/sl-julienamblard/package-template/blob/master/LICENSE)
+[![npm](https://img.shields.io/bundlephobia/minzip/@ory/package-template?style=flat-square)](https://www.npmjs.com/package/@ory/package-template)
+[![npm](https://img.shields.io/npm/dt/@ory/package-template.svg?style=flat-square)](https://www.npmjs.com/package/@ory/package-template)
+[![npm](https://img.shields.io/npm/l/@ory/package-template.svg?style=flat-square)](https://github.com/sl-julienamblard/package-template/blob/master/LICENSE)
 
 </div>  
 
