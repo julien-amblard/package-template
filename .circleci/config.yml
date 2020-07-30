@@ -5,6 +5,26 @@ aliases:
     working_directory: ~/repo
     docker:
       - image: circleci/node:12.5.0
+  
+  - &test_tag_filter
+    filters:
+      tags:
+        ignore: /.*/
+
+  - &canary_tag_filter
+    filters:
+      tags:
+        only: /^v[\d\.]+-(canary|alpha|beta)\.\d$/
+      branches:
+        ignore: /.*/
+
+  - &prod_tag_filter
+    filters:
+      tags:
+        only: /^v[\d\.]+$/
+      branches:
+        ignore: /.*/
+
   - &attach
       attach_workspace:
           at: ~/project
@@ -26,6 +46,11 @@ aliases:
       run:
           name: Print package informations
           command: echo $CURRENT_PACKAGE_NAME@$CURRENT_PACKAGE_VERSION
+  - &persist
+      persist_to_workspace:
+          root: ~/repo
+          paths:
+            - .
 
 jobs:
   tests:
@@ -74,10 +99,7 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      - persist_to_workspace:
-          root: ~/repo
-          paths:
-            - .
+      - *persist
 
   publish-canary:
     <<: *defaults
@@ -90,10 +112,7 @@ jobs:
       - run:
           name: Publish package
           command: npm publish --tag canary
-      - persist_to_workspace:
-          root: ~/repo
-          paths:
-            - .
+      - *persist
 
   publish:
     <<: *defaults
@@ -112,45 +131,28 @@ jobs:
           paths:
             - .
 
+
 workflows:
   version: 2
   tests:
     jobs:
       - tests:
-          filters:
-            tags:
-              ignore: /.*/
+          <<: *test_tag_filter
 
   test-publish-canary:
     jobs:
       - tests:
-          filters:
-            tags:
-              only: /^v[\d\.]+-(canary|alpha|beta)\.\d$/
-            branches:
-              ignore: /.*/
+          <<: *canary_tag_filter
       - publish-canary:
           requires:
             - tests
-          filters:
-            tags:
-              only: /^v[\d\.]+-(canary|alpha|beta)\.\d$/
-            branches:
-              ignore: /.*/
+          <<: *canary_tag_filter
 
   test-publish:
     jobs:
       - tests:
-          filters:
-            tags:
-              only: /^v[\d\.]+$/
-            branches:
-              ignore: /.*/
+          <<: *prod_tag_filter
       - publish:
           requires:
             - tests
-          filters:
-            tags:
-              only: /^v[\d\.]+$/
-            branches:
-              ignore: /.*/
+          <<: *prod_tag_filter
