@@ -41,73 +41,73 @@ aliases:
           branches:
               ignore: /.*/
     - &restor
-        restore_cache:
-            keys:
-                - v1-dependencies-{{ checksum "package.json" }}
-                - v1-dependencies-
+      restore_cache:
+          keys:
+              - v1-dependencies-{{ checksum "package.json" }}
+              - v1-dependencies-
     - &install_deps
-        run:
-            name: Install dependencies
-            command: yarn install --no-lockfile
+      run:
+          name: Install dependencies
+          command: yarn install --no-lockfile
     - &run_test_ci
-        run:
-            name: Run tests
-            command: yarn test:ci
+      run:
+          name: Run tests
+          command: yarn test:ci
     - &run_test_coverage
-        run:
-            name: Build coverage
-            command: npm run test:coverage
+      run:
+          name: Build coverage
+          command: npm run test:coverage
     - &store_artifact
-        store_artifacts:
-            path: tests/coverage/lcov-report
+      store_artifacts:
+          path: tests/coverage/lcov-report
     - &report_coverage
-        run:
-            name: Report coverage
-            command: npm run test:coverage:report
+      run:
+          name: Report coverage
+          command: npm run test:coverage:report
     - &build_webpack
-        run:
-            name: Run build:webpack
-            command: yarn build:webpack
+      run:
+          name: Run build:webpack
+          command: yarn build:webpack
     - &build_babel_transpile
-        run:
-            name: Run build:transpile
-            command: yarn build:transpile
+      run:
+          name: Run build:transpile
+          command: yarn build:transpile
     - &build_ts_types
-        run:
-            name: Run build:types
-            command: yarn build:types
+      run:
+          name: Run build:types
+          command: yarn build:types
     - &save_cache
-        save_cache:
-            paths:
-                - node_modules
-            key: v1-dependencies-{{ checksum "package.json" }}
+      save_cache:
+          paths:
+              - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
 
     - &attach
-        attach_workspace:
-            at: ~/repos
+      attach_workspace:
+          at: ~/repos
     - &auth_registry
-        run:
-            name: Authenticate with registry
-            command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repos/.npmrc
+      run:
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repos/.npmrc
     - &save_package_informations
-        run:
-            name: Save package informations
-            command: |
-                echo 'export CURRENT_PACKAGE_VERSION=$(git describe --tags)' >> $BASH_ENV
-                echo 'export CURRENT_PACKAGE_NAME=$(jq ".name" ~/repos/package.json -r)' >> $BASH_ENV
+      run:
+          name: Save package informations
+          command: |
+              echo 'export CURRENT_PACKAGE_VERSION=$(git describe --tags)' >> $BASH_ENV
+              echo 'export CURRENT_PACKAGE_NAME=$(jq ".name" ~/repos/package.json -r)' >> $BASH_ENV
     - &versioning_package
-        run:
-            name: Versioning package
-            command: npm version $CURRENT_PACKAGE_VERSION --no-git-tag-version
+      run:
+          name: Versioning package
+          command: npm version $CURRENT_PACKAGE_VERSION --no-git-tag-version
     - &print_informations
-        run:
-            name: Print package informations
-            command: echo $CURRENT_PACKAGE_NAME@$CURRENT_PACKAGE_VERSION
+      run:
+          name: Print package informations
+          command: echo $CURRENT_PACKAGE_NAME@$CURRENT_PACKAGE_VERSION
     - &persist
-        persist_to_workspace:
-            root: ~/repos
-            paths:
-                - .
+      persist_to_workspace:
+          root: ~/repos
+          paths:
+              - .
 
 jobs:
     tests:
@@ -135,8 +135,8 @@ jobs:
             - *versioning_package
             - *print_informations
             - run:
-                    name: Publish package
-                    command: npm publish --access public --tag alpha
+                  name: Publish package
+                  command: npm publish --access public --tag alpha
             - *persist
 
     publish-beta:
@@ -148,8 +148,8 @@ jobs:
             - *versioning_package
             - *print_informations
             - run:
-                    name: Publish package
-                    command: npm publish --access public --tag beta
+                  name: Publish package
+                  command: npm publish --access public --tag beta
             - *persist
 
     publish-canary:
@@ -196,24 +196,24 @@ workflows:
                   <<: *alpha_tag_filter
 
     test-publish-beta:
-    jobs:
-        - tests:
-                <<: *beta_tag_filter
-        - publish-beta:
-                context: personal_packages_vars
-                requires:
-                    - tests
-                <<: *beta_tag_filter
+        jobs:
+            - tests:
+                  <<: *beta_tag_filter
+            - publish-beta:
+                  context: personal_packages_vars
+                  requires:
+                      - tests
+                  <<: *beta_tag_filter
 
     test-publish-canary:
-    jobs:
-        - tests:
-                <<: *canary_tag_filter
-        - publish-canary:
-                context: personal_packages_vars
-                requires:
-                    - tests
-                <<: *canary_tag_filter
+        jobs:
+            - tests:
+                  <<: *canary_tag_filter
+            - publish-canary:
+                  context: personal_packages_vars
+                  requires:
+                      - tests
+                  <<: *canary_tag_filter
 
     test-publish-prod:
         jobs:
