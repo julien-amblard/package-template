@@ -179,7 +179,7 @@ jobs:
             - *persist
 
 workflows:
-    version: 2
+    version: 2.1
     tests:
         jobs:
             - tests:
