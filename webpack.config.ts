@@ -3,7 +3,7 @@
 const _path = require("path")
 const webpack = require("webpack")
 const config = {
-	entry: "./src/index.ts",
+	entry: "./src/index",
 	mode: "production",
 	resolve: {
 		modules: [_path.resolve(__dirname, "./src"), "node_modules"],
@@ -12,11 +12,11 @@ const config = {
 	module: {
 		rules: [
 			{
-				test: /\.scss$/i,
+				test: /\.s?css$/i,
 				use: ["style-loader", "css-loader", "sass-loader"],
 			},
 			{
-				test: /\.(js|ts)$/,
+				test: /\.(t|j)sx?$/,
 				exclude: /(node_modules|bower_components)/,
 				use: {
 					loader: "babel-loader",

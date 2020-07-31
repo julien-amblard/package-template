@@ -7,19 +7,19 @@ const htmlWebpackPlugin = new HtmlWebpackPlugin({
 	filename: "./index.html",
 })
 module.exports = {
-	entry: path.join(__dirname, "demo/src/index.ts"),
+	entry: path.join(__dirname, "demo/src/index"),
 	output: {
 		path: path.resolve(__dirname, "demo/dist"),
 	},
-	target: "node",
+	target: "web",
 	module: {
 		rules: [
 			{
-				test: /\.scss$/i,
+				test: /\.s?css$/i,
 				use: ["style-loader", "css-loader", "sass-loader"],
 			},
 			{
-				test: /\.(js|ts)$/,
+				test: /\.(t|j)sx?$/,
 				use: {
 					loader: "babel-loader",
 					options: {
@@ -41,7 +41,8 @@ module.exports = {
 		extensions: [".js", ".jsx", ".ts", ".tsx"],
 	},
 	devServer: {
-		port: 8645,
+		port: 8646,
 		open: true,
+		hot: true,
 	},
 }
