@@ -1,145 +1,226 @@
+# @format
+
 version: 2.1
 
 aliases:
-  - &defaults
-    working_directory: ~/repos
-    docker:
-      - image: circleci/node:12.5.0
-  
-  - &test_tag_filter
-    filters:
-      tags:
-        ignore: /.*/
+    - &defaults
+      working_directory: ~/repos
+      docker:
+          - image: circleci/node:12.5.0
 
-  - &canary_tag_filter
-    filters:
-      tags:
-        only: /^v[\d\.]+-(canary|alpha|beta)\.\d$/
-      branches:
-        ignore: /.*/
+    - &test_tag_filter
+      filters:
+          tags:
+              ignore: /.*/
 
-  - &prod_tag_filter
-    filters:
-      tags:
-        only: /^v[\d\.]+$/
-      branches:
-        ignore: /.*/
+    - &alpha_tag_filter
+      filters:
+          tags:
+              only: /^v[\d\.]+-alpha\.\d$/
+          branches:
+              ignore: /.*/
 
-  - &attach
-      attach_workspace:
-          at: ~/repos
-  - &auth_registry
-      run:
-          name: Authenticate with registry
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repos/.npmrc
-  - &save_package_informations
-      run:
-          name: Save package informations
-          command: |
-            echo 'export CURRENT_PACKAGE_VERSION=$(git describe --tags)' >> $BASH_ENV
-            echo 'export CURRENT_PACKAGE_NAME=$(jq ".name" ~/repos/package.json -r)' >> $BASH_ENV
-  - &versioning_package
-      run:
-          name: Versioning package
-          command: npm version $CURRENT_PACKAGE_VERSION --no-git-tag-version
-  - &print_informations
-      run:
-          name: Print package informations
-          command: echo $CURRENT_PACKAGE_NAME@$CURRENT_PACKAGE_VERSION
-  - &persist
-      persist_to_workspace:
-          root: ~/repos
-          paths:
-            - .
+    - &beta_tag_filter
+      filters:
+          tags:
+              only: /^v[\d\.]+-beta\.\d$/
+          branches:
+              ignore: /.*/
+
+    - &canary_tag_filter
+      filters:
+          tags:
+              only: /^v[\d\.]+-canary\.\d$/
+          branches:
+              ignore: /.*/
+
+    - &prod_tag_filter
+      filters:
+          tags:
+              only: /^v[\d\.]+$/
+          branches:
+              ignore: /.*/
+    - &restor
+        restore_cache:
+            keys:
+                - v1-dependencies-{{ checksum "package.json" }}
+                - v1-dependencies-
+    - &install_deps
+        run:
+            name: Install dependencies
+            command: yarn install --no-lockfile
+    - &run_test_ci
+        run:
+            name: Run tests
+            command: yarn test:ci
+    - &run_test_coverage
+        run:
+            name: Build coverage
+            command: npm run test:coverage
+    - &store_artifact
+        store_artifacts:
+            path: tests/coverage/lcov-report
+    - &report_coverage
+        run:
+            name: Report coverage
+            command: npm run test:coverage:report
+    - &build_webpack
+        run:
+            name: Run build:webpack
+            command: yarn build:webpack
+    - &build_babel_transpile
+        run:
+            name: Run build:transpile
+            command: yarn build:transpile
+    - &build_ts_types
+        run:
+            name: Run build:types
+            command: yarn build:types
+    - &save_cache
+        save_cache:
+            paths:
+                - node_modules
+            key: v1-dependencies-{{ checksum "package.json" }}
+
+    - &attach
+        attach_workspace:
+            at: ~/repos
+    - &auth_registry
+        run:
+            name: Authenticate with registry
+            command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repos/.npmrc
+    - &save_package_informations
+        run:
+            name: Save package informations
+            command: |
+                echo 'export CURRENT_PACKAGE_VERSION=$(git describe --tags)' >> $BASH_ENV
+                echo 'export CURRENT_PACKAGE_NAME=$(jq ".name" ~/repos/package.json -r)' >> $BASH_ENV
+    - &versioning_package
+        run:
+            name: Versioning package
+            command: npm version $CURRENT_PACKAGE_VERSION --no-git-tag-version
+    - &print_informations
+        run:
+            name: Print package informations
+            command: echo $CURRENT_PACKAGE_NAME@$CURRENT_PACKAGE_VERSION
+    - &persist
+        persist_to_workspace:
+            root: ~/repos
+            paths:
+                - .
 
 jobs:
-  tests:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-      - run:
-          name: Install dependencies
-          command: yarn install --no-lockfile
-      - run:
-          name: Run tests
-          command: yarn test:ci
-      - run:
-          name: Build coverage
-          command: npm run test:coverage
-      - store_artifacts:
-          path: tests/coverage/lcov-report
-      - run:
-          name: Report coverage
-          command: npm run test:coverage:report
-      - run:
-          name: Run build:webpack
-          command: yarn build:webpack
-      - run:
-          name: Run build:transpile
-          command: yarn build:transpile
-      - run:
-          name: Run build:types
-          command: yarn build:types
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      - *persist
+    tests:
+        <<: *defaults
+        steps:
+            - checkout
+            - *restor
+            - *install_deps
+            - *run_test_ci
+            - *run_test_coverage
+            - *store_artifact
+            - *report_coverage
+            # - *build_webpack
+            - *build_babel_transpile
+            - *build_ts_types
+            - *save_cache
+            - *persist
 
-  publish-canary:
-    <<: *defaults
-    steps:
-      - *attach
-      - *auth_registry
-      - *save_package_informations
-      - *versioning_package
-      - *print_informations
-      - run:
-          name: Publish package
-          command: npm publish --access public --tag canary
-      - *persist
+    publish-alpha:
+        <<: *defaults
+        steps:
+            - *attach
+            - *auth_registry
+            - *save_package_informations
+            - *versioning_package
+            - *print_informations
+            - run:
+                    name: Publish package
+                    command: npm publish --access public --tag alpha
+            - *persist
 
-  publish:
-    <<: *defaults
-    steps:
-      - *attach
-      - *auth_registry
-      - *save_package_informations
-      - *versioning_package
-      - *print_informations
-      - run:
-          name: Publish package
-          command: npm publish --access public
-      - *persist
+    publish-beta:
+        <<: *defaults
+        steps:
+            - *attach
+            - *auth_registry
+            - *save_package_informations
+            - *versioning_package
+            - *print_informations
+            - run:
+                    name: Publish package
+                    command: npm publish --access public --tag beta
+            - *persist
 
+    publish-canary:
+        <<: *defaults
+        steps:
+            - *attach
+            - *auth_registry
+            - *save_package_informations
+            - *versioning_package
+            - *print_informations
+            - run:
+                  name: Publish package
+                  command: npm publish --access public --tag canary
+            - *persist
+
+    publish-prod:
+        <<: *defaults
+        steps:
+            - *attach
+            - *auth_registry
+            - *save_package_informations
+            - *versioning_package
+            - *print_informations
+            - run:
+                  name: Publish package
+                  command: npm publish --access public
+            - *persist
 
 workflows:
-  version: 2
-  tests:
-    jobs:
-      - tests:
-          <<: *test_tag_filter
+    version: 2
+    tests:
+        jobs:
+            - tests:
+                  <<: *test_tag_filter
 
-  test-publish-canary:
-    jobs:
-      - tests:
-          <<: *canary_tag_filter
-      - publish-canary:
-          context: personal_packages_vars
-          requires:
-            - tests
-          <<: *canary_tag_filter
+    test-publish-alpha:
+        jobs:
+            - tests:
+                  <<: *alpha_tag_filter
+            - publish-alpha:
+                  context: personal_packages_vars
+                  requires:
+                      - tests
+                  <<: *alpha_tag_filter
 
-  test-publish:
+    test-publish-beta:
     jobs:
-      - tests:
-          <<: *prod_tag_filter
-      - publish:
-          context: personal_packages_vars
-          requires:
-            - tests
-          <<: *prod_tag_filter
+        - tests:
+                <<: *beta_tag_filter
+        - publish-beta:
+                context: personal_packages_vars
+                requires:
+                    - tests
+                <<: *beta_tag_filter
+
+    test-publish-canary:
+    jobs:
+        - tests:
+                <<: *canary_tag_filter
+        - publish-canary:
+                context: personal_packages_vars
+                requires:
+                    - tests
+                <<: *canary_tag_filter
+
+    test-publish-prod:
+        jobs:
+            - tests:
+                  <<: *prod_tag_filter
+            - publish-prod:
+                  context: personal_packages_vars
+                  requires:
+                      - tests
+                  <<: *prod_tag_filter
