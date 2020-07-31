@@ -95,10 +95,22 @@ aliases:
           command: |
               echo 'export CURRENT_PACKAGE_VERSION=$(git describe --tags)' >> $BASH_ENV
               echo 'export CURRENT_PACKAGE_NAME=$(jq ".name" ~/repos/package.json -r)' >> $BASH_ENV
-    - &versioning_package
+    - &versioning_package_prod
       run:
           name: Versioning package
           command: npm version $CURRENT_PACKAGE_VERSION --no-git-tag-version
+    - &versioning_package_alpha
+      run:
+          name: Versioning package
+          command: npm version $CURRENT_PACKAGE_VERSION --no-git-tag-version --preid alpha
+    - &versioning_package_beta
+      run:
+          name: Versioning package
+          command: npm version $CURRENT_PACKAGE_VERSION --no-git-tag-version --preid beta
+    - &versioning_package_canary
+      run:
+          name: Versioning package
+          command: npm version $CURRENT_PACKAGE_VERSION --no-git-tag-version --preid canary
     - &print_informations
       run:
           name: Print package informations
@@ -132,7 +144,7 @@ jobs:
             - *attach
             - *auth_registry
             - *save_package_informations
-            - *versioning_package
+            - *versioning_package_alpha
             - *print_informations
             - run:
                   name: Publish package
@@ -145,7 +157,7 @@ jobs:
             - *attach
             - *auth_registry
             - *save_package_informations
-            - *versioning_package
+            - *versioning_package_beta
             - *print_informations
             - run:
                   name: Publish package
@@ -158,7 +170,7 @@ jobs:
             - *attach
             - *auth_registry
             - *save_package_informations
-            - *versioning_package
+            - *versioning_package_canary
             - *print_informations
             - run:
                   name: Publish package
@@ -171,7 +183,7 @@ jobs:
             - *attach
             - *auth_registry
             - *save_package_informations
-            - *versioning_package
+            - *versioning_package_prod
             - *print_informations
             - run:
                   name: Publish package
